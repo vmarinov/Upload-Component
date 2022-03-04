@@ -1,0 +1,27 @@
+<div class="upload-component">
+  <form novalidate [formGroup]="uploadForm">
+    <div class="upload-btn-container">
+      <label class="btn btn-secondary">
+        Select files...
+        <input type="file" name="files" class="upload-input" multiple formControlName="files"
+          (change)="selectFiles($event)">
+      </label>
+    </div>
+    <div class="selected-files" *ngIf="selectedFiles.size > 0">
+      <div *ngFor="let file of selectedFiles | keyvalue" class="file">
+        <span class="file-remove" (click)="removeFile(file.key)">
+          X
+        </span>
+        <div class="file-name">
+          {{ file.value.name }}
+        </div>
+        <div class="file-size">
+          {{ file.value.size }}
+        </div>
+      </div>
+      <br>
+      <button class="upload-btns btn-clear" (click)="clearSelection()">Clear</button>
+      <button class="upload-btns btn-upload">Upload</button>
+    </div>
+  </form>
+</div>
