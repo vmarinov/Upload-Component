@@ -6,9 +6,14 @@ import { FormControl, FormGroup } from "@angular/forms";
     templateUrl: 'upload_component.template.html'
 })
 export class UploadComponent implements OnInit {
+    @Input('url') url: any;
+    @Input('multiple') set multi(value: string) {
+        this.multiple = (value === 'true');
+    }
+    
     selectedFiles = new Map<any, any>();
     uploading: boolean = false;
-    @Input('url') url: any;
+    multiple: boolean = false;
 
     uploadForm!: FormGroup;
     files = new FormControl('');

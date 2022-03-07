@@ -12,7 +12,7 @@ import { UploadItemComponent } from './uploadItem.component';
   template: `
     <div class="col-md-6">
       <br>
-      <upload url="http://httpbin.org/post"></upload>
+      <upload url="http://httpbin.org/post" multiple="true"></upload>
     </div>
   `
 })
