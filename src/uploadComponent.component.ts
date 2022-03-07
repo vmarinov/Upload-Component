@@ -10,7 +10,7 @@ export class UploadComponent implements OnInit {
     @Input('multiple') set multi(value: string) {
         this.multiple = (value === 'true');
     }
-    
+
     selectedFiles = new Map<any, any>();
     uploading: boolean = false;
     multiple: boolean = false;
@@ -29,7 +29,6 @@ export class UploadComponent implements OnInit {
     selectFiles(event: any) {
         let files = event.target.files;
         for (let file of files) {
-            let size = `${Number(file.size / 1024).toFixed(2)}kb`;
             this.selectedFiles.set(file.name, file);
         }
     }
