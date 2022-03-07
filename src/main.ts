@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Component } from '@angular/core';
 import { UploadComponent } from './uploadComponent.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { UploadItemComponent } from './uploadItem.component';
 
 @Component({
   selector: 'app',
@@ -22,7 +23,8 @@ class AppComponent {
   imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule],
   declarations: [
     AppComponent,
-    UploadComponent
+    UploadComponent,
+    UploadItemComponent
   ],
   bootstrap: [AppComponent]
 })
