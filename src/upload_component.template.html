@@ -9,15 +9,7 @@
     </div>
     <div class="selected-files" *ngIf="selectedFiles.size > 0">
       <div *ngFor="let file of selectedFiles | keyvalue" class="file">
-        <span class="file-remove" (click)="removeFile(file.key)">
-          X
-        </span>
-        <div class="file-name">
-          {{ file.value.name }}
-        </div>
-        <div class="file-size">
-          {{ file.value.size }}
-        </div>
+        <upload-item [file]="file" (fileRemoved)="removeFile($event)"></upload-item>
       </div>
       <br>
       <button class="upload-btns btn-clear" (click)="clearSelection()">Clear</button>
