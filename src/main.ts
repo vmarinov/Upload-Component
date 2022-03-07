@@ -12,12 +12,11 @@ import { UploadItemComponent } from './uploadItem.component';
   template: `
     <div class="col-md-6">
       <br>
-      <upload></upload>
+      <upload url="http://httpbin.org/post"></upload>
     </div>
   `
 })
-class AppComponent {
-}
+class AppComponent { }
 
 @NgModule({
   imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule],

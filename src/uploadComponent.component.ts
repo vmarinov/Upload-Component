@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 
 @Component({
@@ -7,10 +7,11 @@ import { FormControl, FormGroup } from "@angular/forms";
 })
 export class UploadComponent implements OnInit {
     selectedFiles = new Map<any, any>();
+    uploading: boolean = false;
+    @Input('url') url: any;
 
     uploadForm!: FormGroup;
     files = new FormControl('');
-    uploading: boolean = false;
 
     ngOnInit(): void {
         this.uploadForm = new FormGroup(
@@ -49,5 +50,9 @@ export class UploadComponent implements OnInit {
 
     clearSelection() {
         this.selectedFiles.clear();
+    }
+
+    uploadFiles() {
+        this.uploading = true;
     }
 }
