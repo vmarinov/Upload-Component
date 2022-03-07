@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import {
-    state,
     style,
     animate,
     transition,
@@ -20,9 +19,11 @@ import {
 })
 export class UploadItemComponent {
     @Input() file: any;
+    @Input() uploading!: boolean;
     @Output() fileRemoved: EventEmitter<any> = new EventEmitter<any>();
 
     shown: boolean = true;
+    ready: boolean = false;
 
     removeFile(file: any) {
         this.shown = false;
