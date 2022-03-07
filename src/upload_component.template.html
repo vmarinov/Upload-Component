@@ -3,17 +3,22 @@
     <div class="upload-btn-container">
       <label class="btn btn-secondary">
         Select files...
-        <input type="file" name="files" class="upload-input" multiple formControlName="files"
+        <input type="file" name="files" class="upload-input" 
+          formControlName="files"
+          multiple 
           (change)="selectFiles($event)">
       </label>
-    </div>
-    <div class="selected-files" *ngIf="selectedFiles.size > 0">
-      <div *ngFor="let file of selectedFiles | keyvalue" class="file">
-        <upload-item [file]="file" (fileRemoved)="removeFile($event)"></upload-item>
+      <div class="drop-zone" (drop)="dropFiles($event)" (dragover)="dragOver($event)">
+        Or drag and drop here
       </div>
+    </div>
+    <div *ngFor="let file of selectedFiles | keyvalue" class="file">
+      <upload-item [file]="file" (fileRemoved)="removeFile($event)"></upload-item>
+    </div>
+    <div class="selected-files" *ngIf="selectedFiles.size > 0 && !uploading">
       <br>
       <button class="upload-btns btn-clear" (click)="clearSelection()">Clear</button>
-      <button class="upload-btns btn-upload">Upload</button>
+      <button class="upload-btns btn-upload" (click)="uploading = !uploading">Upload</button>
     </div>
   </form>
 </div>
