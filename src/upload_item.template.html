@@ -1,11 +1,13 @@
 <div class="file" *ngIf="shown" @addRemove>
-    <span *ngIf="!uploading" class="file-status" (click)="removeFile(file.key)">
-        X
-    </span>
-    <span *ngIf="uploading" class="file-status">
-        <span>%</span>
-        <span style="line-height: 35px;">⏸</span>
-        <span (click)="removeFile(file.key)">⃠</span>
+    <span *ngIf="!file?.value.ready">
+        <span *ngIf="!uploading" class="file-status" (click)="removeFile(file.key)">
+            X
+        </span>
+        <span *ngIf="uploading" class="file-status">
+            <span> {{ file.value?.percentDone }}%</span>
+            <span style="line-height: 35px;">⏸</span>
+            <span (click)="removeFile(file.key)">⃠</span>
+        </span>
     </span>
     <div class="file-name">
         {{ file.value.name }}
@@ -13,6 +15,6 @@
     <div class="file-size">
         {{ getFileSize(file.value.size) }}
     </div>
-    <progress *ngIf="uploading && !ready" id="progress" value="32" max="100" class="progress-bar"> 32% </progress>
-    <div style="color:green;font-size: 12px">File(s) uploaded successfully</div>
+    <progress *ngIf="uploading && !file?.value?.ready" [value]="file?.value?.percentDone || 0" max="100" class="progress-bar"></progress>
+    <div *ngIf="file?.value?.ready" style="color:green;font-size: 12px">File(s) uploaded successfully</div>
 </div>

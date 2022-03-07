@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
 import { UploadComponent } from './uploadComponent.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UploadItemComponent } from './uploadItem.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app',
@@ -19,7 +20,7 @@ import { UploadItemComponent } from './uploadItem.component';
 class AppComponent { }
 
 @NgModule({
-  imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule],
+  imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule, HttpClientModule],
   declarations: [
     AppComponent,
     UploadComponent,

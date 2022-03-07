@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
+import { HttpClient, HttpEventType, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 
 @Component({
     selector: 'upload',
@@ -17,6 +18,8 @@ export class UploadComponent implements OnInit {
 
     uploadForm!: FormGroup;
     files = new FormControl('');
+
+    constructor(private http: HttpClient) { }
 
     ngOnInit(): void {
         this.uploadForm = new FormGroup(
@@ -56,7 +59,37 @@ export class UploadComponent implements OnInit {
         this.selectedFiles.clear();
     }
 
-    uploadFiles() {
+    async uploadFiles() {
         this.uploading = true;
+        let formData = new FormData();
+        let params = new HttpParams();
+        let options = {
+            params: params,
+            reportProgress: true,
+        };
+        let filePromises = [];
+
+        for await (let file of this.selectedFiles.values()) {
+            formData.append('upload', file);
+            formData.append('fileName', file.name);
+            let req = new HttpRequest('POST', this.url, formData, options);
+            let upload = this.http.request(req);
+            filePromises.push(upload.toPromise());
+            upload.subscribe(
+                (event: any) => {
+                    if (event.type == HttpEventType.UploadProgress) {
+                        file.percentDone = Math.round(100 * event.loaded / event?.total);
+                    } else if (event instanceof HttpResponse) {
+                        console.log('File is completely loaded!');
+                    }
+                },
+                (err) => {
+                    console.error("Upload Error:", err);
+                }, () => {
+                    console.log("Upload done");
+                    file.ready = true;
+                }
+            )
+        }
     }
 }
