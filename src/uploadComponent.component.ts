@@ -10,6 +10,7 @@ export class UploadComponent implements OnInit {
 
     uploadForm!: FormGroup;
     files = new FormControl('');
+    uploading: boolean = false;
 
     ngOnInit(): void {
         this.uploadForm = new FormGroup(
@@ -23,8 +24,20 @@ export class UploadComponent implements OnInit {
         let files = event.target.files;
         for (let file of files) {
             let size = `${Number(file.size / 1024).toFixed(2)}kb`;
-            this.selectedFiles.set(file.name, { name: file.name, size });
+            this.selectedFiles.set(file.name, file);
         }
+    }
+
+    dropFiles(event: any) {
+        event.preventDefault();
+        for (let file of event.dataTransfer.files) {
+            this.selectedFiles.set(file.name, file);
+        }
+    }
+
+    dragOver(event: any) {
+        event.stopPropagation();
+        event.preventDefault();
     }
 
     removeFile(file: any) {
