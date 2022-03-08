@@ -1,21 +1,25 @@
 <div class="upload-component" (drop)="dropFiles($event)" (dragover)="dragOver($event)">
   <form novalidate [formGroup]="uploadForm">
     <div class="upload-btn-container">
-      <label class="btn btn-secondary">
+      <label class="btn btn-secondary" 
+        [ngClass]="{ disabled: uploading }"
+        [for]="uploading ? '' : 'file-input'">
         Select files...
-        <input type="file" name="files" class="upload-input" 
-          formControlName="files"
+      </label>
+        <input type="file" name="files" class="upload-input" id="file-input"
+          formControlName="files" 
           multiple 
           (change)="selectFiles($event)">
-      </label>
+          Drag here
     </div>
     <div *ngFor="let file of selectedFiles | keyvalue" class="file">
       <upload-item [file]="file" [uploading]="uploading" (fileRemoved)="removeFile($event)"></upload-item>
     </div>
-    <div class="selected-files" *ngIf="selectedFiles.size > 0 && !uploading">
+    <div class="selected-files" *ngIf="selectedFiles.size > 0">
       <br>
-      <button class="upload-btns btn-clear" (click)="clearSelection()">Clear</button>
-      <button class="upload-btns btn-upload" (click)="uploadFiles()">Upload</button>
+      <button class="upload-btns btn-clear" [disabled]="!uploadingFinished" (click)="clearSelection()">Clear</button>
+      <button class="upload-btns btn-upload" *ngIf="!uploading" (click)="uploadFiles()">Upload</button>
+      <button class="upload-btns btn-upload" *ngIf="uploading" (click)="stopUpload()">Stop</button>
     </div>
   </form>
 </div>

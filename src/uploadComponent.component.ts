@@ -8,12 +8,14 @@ import { HttpClient, HttpEventType, HttpParams, HttpRequest, HttpResponse } from
 })
 export class UploadComponent implements OnInit {
     @Input('url') url: any;
+    @Input('maxUploadFiles') maxUploadFiles: any;
     @Input('multiple') set multi(value: string) {
         this.multiple = (value === 'true');
     }
 
     selectedFiles = new Map<any, any>();
     uploading: boolean = false;
+    uploadingFinished: boolean = true;
     multiple: boolean = false;
 
     uploadForm!: FormGroup;
@@ -24,7 +26,7 @@ export class UploadComponent implements OnInit {
     ngOnInit(): void {
         this.uploadForm = new FormGroup(
             {
-                files: this.files
+                files: this.files,
             }
         );
     }
@@ -38,6 +40,10 @@ export class UploadComponent implements OnInit {
 
     dropFiles(event: any) {
         event.preventDefault();
+        if (this.uploading) {
+            return;
+        }
+
         for (let file of event.dataTransfer.files) {
             this.selectedFiles.set(file.name, file);
         }
@@ -57,10 +63,12 @@ export class UploadComponent implements OnInit {
 
     clearSelection() {
         this.selectedFiles.clear();
+        this.uploading = false;
     }
 
     async uploadFiles() {
         this.uploading = true;
+        this.uploadingFinished = false;
         let formData = new FormData();
         let params = new HttpParams();
         let options = {
@@ -91,5 +99,9 @@ export class UploadComponent implements OnInit {
                 }
             )
         }
+    }
+
+    stopUpload() {
+        
     }
 }
