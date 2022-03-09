@@ -1,6 +1,5 @@
 import { Component, Inject, Input, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
-import { HttpClient, HttpEventType, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { UploadService } from "./uploadService.class";
 import { Subscription } from "rxjs";
 
@@ -14,29 +13,23 @@ export class UploadComponent implements OnInit, OnDestroy {
 
     selectedFiles = new Map<any, any>();
     filesIterator = this.selectedFiles.values();
-    fileUploaded: any;
     uploading: boolean = false;
     uploadingFinished: boolean = true;
     multiple: boolean = false;
-    fileStatusSubscription!: Subscription;
+    concurrentFilesSubscription!: Subscription;
 
     uploadForm!: FormGroup;
     files = new FormControl('');
 
-    constructor(private http: HttpClient, private uploadService: UploadService) {
-        if (this.maxUploadFiles) {
-            this.uploadService.setMaxSimultaneous(this.maxUploadFiles);
-        }
-
-        this.fileStatusSubscription = this.uploadService.fileUploadReady$.subscribe((state: any) => {
-            if (state) {
-                this.fileUploaded = this.filesIterator.next();
-                if (!this.fileUploaded.done) {
-                    this.uploadService.queueFile(this.fileUploaded.value);
+    constructor(private uploadService: UploadService) {
+        this.concurrentFilesSubscription = this.uploadService.concurrentFilesCount$.subscribe((count: any) => {
+            if (count < this.maxUploadFiles) {
+                let fileUploaded = this.filesIterator.next();
+                if (!fileUploaded.done) {
+                    this.uploadService.uploadFile(fileUploaded);
                 } else {
                     this.uploadingFinished = true;
                 }
-                this.uploadService.readyFile(false);
             }
         });
     }
@@ -51,7 +44,7 @@ export class UploadComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.fileStatusSubscription.unsubscribe();
+        this.concurrentFilesSubscription.unsubscribe();
     }
 
     selectFiles(event: any) {
@@ -90,56 +83,17 @@ export class UploadComponent implements OnInit, OnDestroy {
         this.uploading = false;
     }
 
-    async uploadFiles() {
+    uploadFiles() {
         this.uploading = true;
         this.uploadingFinished = false;
-        if (this.multiple) {
-            this.uploadMultiple();
-        } else {
-            this.uploadOneByOne();
-        }
-    }
-
-    async uploadOneByOne() {
         let file = this.filesIterator.next();
-        if (file) {
-            this.uploadService.queueFile(file.value);
-        }
-    }
-
-    async uploadMultiple() {
-        let formData = new FormData();
-        let params = new HttpParams();
-        let options = {
-            params: params,
-            reportProgress: true,
-        };
-
-        for await (let file of this.selectedFiles.values()) {
-            formData.append('upload', file);
-            formData.append('fileName', file.name);
-            let req = new HttpRequest('POST', this.url, formData, options);
-            let upload = this.http.request(req);
-            upload.subscribe(
-                (event: any) => {
-                    if (event.type == HttpEventType.UploadProgress) {
-                        file.percentDone = Math.round(100 * event.loaded / event?.total);
-                    } else if (event instanceof HttpResponse) {
-                        console.log('File is completely loaded!');
-                    }
-                },
-                (err) => {
-                    console.error("Upload Error:", err);
-                }, () => {
-                    console.log("Upload done");
-                    file.value.ready = true;
-                }
-            )
+        if (!file?.done) {
+            this.uploadService.uploadFile(file);
         }
     }
 
     stopUpload() {
-        //unsubscribe post requests
+        this.uploadService.stopUpload();
     }
 
     asIsOrder(a: any, b: any) {

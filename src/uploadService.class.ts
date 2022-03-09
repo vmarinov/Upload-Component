@@ -1,26 +1,61 @@
+import { HttpClient, HttpEventType, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Subject } from "rxjs";
+import { Subject } from "rxjs";
 
 @Injectable()
 export class UploadService {
-    maxSimultaneousSource = new BehaviorSubject(+Infinity);
-    fileReadySource = new BehaviorSubject(false);
-    queuedFileSource = new Subject();
     url: any;
+    sub: any;
+    concurrentFilesCount: number = 0;
+    filesSubscriptions: Set<any> = new Set<any>();
 
-    maxSimultaneousCount$ = this.maxSimultaneousSource.asObservable();
-    queuedFile$ = this.queuedFileSource.asObservable();
-    fileUploadReady$ = this.fileReadySource.asObservable();
+    concurrentUploadsSource = new Subject();
+    concurrentFilesCount$ = this.concurrentUploadsSource.asObservable();
 
-    queueFile(file: any) {
-        this.queuedFileSource.next(file);
+    constructor(private http: HttpClient) { }
+
+    concurrentUploads(count: number) {
+        this.concurrentUploadsSource.next(count);
     }
 
-    readyFile(state: boolean) {
-        this.fileReadySource.next(state);
+    uploadFile(file: any) {
+        this.concurrentFilesCount++;
+        this.concurrentUploads(this.concurrentFilesCount);
+
+        let formData = new FormData();
+        formData.append(file.value.name, file.value);
+        let upload = this.http.post(this.url, formData, {
+            reportProgress: true,
+            observe: 'events'
+        });
+        this.sub = upload.subscribe({
+            next: (event: any) => {
+                this.filesSubscriptions.add(this.sub);
+                if (event.type == HttpEventType.UploadProgress) {
+                    file.value.percentDone = Math.round(100 * event.loaded / event?.total);
+                } else if (event instanceof HttpResponse) {
+                    console.log('File is completely loaded!');
+                }
+            },
+            error: (err: any) => {
+                console.error("Upload Error:", err);
+            },
+            complete: () => {
+                console.log("Upload done");
+                file.value.ready = true;
+                this.concurrentFilesCount--;
+                this.concurrentUploads(this.concurrentFilesCount);
+                this.sub.unsubscribe();
+                this.filesSubscriptions.delete(this.sub);
+            }
+        });
     }
 
-    setMaxSimultaneous(count: number) {
-        this.maxSimultaneousSource.next(count);
+    stopUpload() {
+        for (let sub of this.filesSubscriptions) {
+            if (sub)
+                sub.unsubscribe();
+        }
+        this.filesSubscriptions.clear();
     }
 }

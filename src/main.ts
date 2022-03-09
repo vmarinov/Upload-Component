@@ -14,7 +14,7 @@ import { UploadService } from './uploadService.class';
   template: `
     <div class="col-md-6">
       <br>
-      <upload url="http://httpbin.org/post" maxUploadFiles="1"></upload>
+      <upload url="http://httpbin.org/post" maxUploadFiles="3"></upload>
     </div>
   `
 })
