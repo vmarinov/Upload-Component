@@ -6,6 +6,7 @@ export class UploadService {
     maxSimultaneousSource = new BehaviorSubject(+Infinity);
     fileReadySource = new BehaviorSubject(false);
     queuedFileSource = new Subject();
+    url: any;
 
     maxSimultaneousCount$ = this.maxSimultaneousSource.asObservable();
     queuedFile$ = this.queuedFileSource.asObservable();

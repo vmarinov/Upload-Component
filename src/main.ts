@@ -28,7 +28,7 @@ class AppComponent { }
     UploadItemComponent
   ],
   bootstrap: [AppComponent],
-  providers: [UploadService]
+  providers: [{ provide: 'UploadService', useClass: UploadService }]
 })
 export class AppModule {
 }
