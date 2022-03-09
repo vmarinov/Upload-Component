@@ -1,5 +1,7 @@
+import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject } from "rxjs";
 
+@Injectable()
 export class UploadService {
     maxSimultaneousSource = new BehaviorSubject(+Infinity);
     fileReadySource = new BehaviorSubject(false);
