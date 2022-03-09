@@ -12,7 +12,7 @@
           (change)="selectFiles($event)">
           Drag here
     </div>
-    <div *ngFor="let file of selectedFiles | keyvalue" class="file">
+    <div *ngFor="let file of selectedFiles | keyvalue : asIsOrder" class="file">
       <upload-item [file]="file" [uploading]="uploading" (fileRemoved)="removeFile($event)"></upload-item>
     </div>
     <div class="selected-files" *ngIf="selectedFiles.size > 0">

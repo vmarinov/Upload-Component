@@ -141,4 +141,8 @@ export class UploadComponent implements OnInit, OnDestroy {
     stopUpload() {
         //unsubscribe post requests
     }
+
+    asIsOrder(a: any, b: any) {
+        return 1;
+    }
 }
