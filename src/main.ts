@@ -7,13 +7,14 @@ import { UploadComponent } from './uploadComponent.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UploadItemComponent } from './uploadItem.component';
 import { HttpClientModule } from '@angular/common/http';
+import { UploadService } from './uploadService.class';
 
 @Component({
   selector: 'app',
   template: `
     <div class="col-md-6">
       <br>
-      <upload url="http://httpbin.org/post" multiple="true" maxUploadFiles="3"></upload>
+      <upload url="http://httpbin.org/post" multiple="false" maxUploadFiles="3"></upload>
     </div>
   `
 })
@@ -26,7 +27,8 @@ class AppComponent { }
     UploadComponent,
     UploadItemComponent
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: [UploadService]
 })
 export class AppModule {
 }
