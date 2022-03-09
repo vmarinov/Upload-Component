@@ -11,9 +11,6 @@ import { Subscription } from "rxjs";
 export class UploadComponent implements OnInit, OnDestroy {
     @Input('url') url: any;
     @Input('maxUploadFiles') maxUploadFiles: any;
-    @Input('multiple') set multi(value: string) {
-        this.multiple = (value === 'true');
-    }
 
     selectedFiles = new Map<any, any>();
     filesIterator = this.selectedFiles.values();
@@ -26,7 +23,7 @@ export class UploadComponent implements OnInit, OnDestroy {
     uploadForm!: FormGroup;
     files = new FormControl('');
 
-    constructor(private http: HttpClient, @Inject('UploadService') private uploadService: UploadService) {
+    constructor(private http: HttpClient, private uploadService: UploadService) {
         if (this.maxUploadFiles) {
             this.uploadService.setMaxSimultaneous(this.maxUploadFiles);
         }
@@ -142,6 +139,6 @@ export class UploadComponent implements OnInit, OnDestroy {
     }
 
     stopUpload() {
-
+        //unsubscribe post requests
     }
 }

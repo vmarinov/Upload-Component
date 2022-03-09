@@ -30,7 +30,7 @@ export class UploadItemComponent implements OnDestroy {
     queueSubscription!: Subscription;
     url: any;
 
-    constructor(@Inject('UploadService') private uploadService: UploadService, private http: HttpClient) {
+    constructor(private uploadService: UploadService, private http: HttpClient) {
         this.url = this.uploadService.url;
         this.queueSubscription = this.uploadService.queuedFile$.subscribe((queuedFile: any) => {
             if (this.file.value == queuedFile && !this.file?.ready) {

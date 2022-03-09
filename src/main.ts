@@ -14,7 +14,7 @@ import { UploadService } from './uploadService.class';
   template: `
     <div class="col-md-6">
       <br>
-      <upload url="http://httpbin.org/post" multiple="false" maxUploadFiles="3"></upload>
+      <upload url="http://httpbin.org/post" maxUploadFiles="1"></upload>
     </div>
   `
 })
@@ -28,7 +28,7 @@ class AppComponent { }
     UploadItemComponent
   ],
   bootstrap: [AppComponent],
-  providers: [{ provide: 'UploadService', useClass: UploadService }]
+  providers: [UploadService]
 })
 export class AppModule {
 }
