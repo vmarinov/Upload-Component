@@ -48,9 +48,21 @@ export class UploadComponent implements OnInit, OnDestroy {
     }
 
     selectFiles(event: any) {
+        let alreadySelected = '';
         let files = event.target.files;
         for (let file of files) {
+            if (this.selectedFiles.has(file.name)) {
+                if (alreadySelected == '') {
+                    alreadySelected += `Files already selected: \n ${file.name}\n`
+                } else {
+                    alreadySelected += `${file.name}\n`;
+                }
+                continue;
+            }
             this.selectedFiles.set(file.name, file);
+        }
+        if (alreadySelected != '') {
+            alert(alreadySelected);
         }
     }
 
@@ -60,8 +72,21 @@ export class UploadComponent implements OnInit, OnDestroy {
             return;
         }
 
+        let alreadySelected = '';
         for (let file of event.dataTransfer.files) {
+            if (this.selectedFiles.has(file.name)) {
+                if (alreadySelected == '') {
+                    alreadySelected += `Files already selected: \n ${file.name}\n`
+                } else {
+                    alreadySelected += `${file.name}\n`;
+                }
+                continue;
+            }
             this.selectedFiles.set(file.name, file);
+        }
+
+        if (alreadySelected != '') {
+            alert(alreadySelected);
         }
     }
 
@@ -80,7 +105,9 @@ export class UploadComponent implements OnInit, OnDestroy {
     clearSelection() {
         this.selectedFiles.clear();
         this.filesIterator = this.selectedFiles.values();
+        this.uploadService.concurrentFilesCount = 0;
         this.uploading = false;
+        this.files.reset();
     }
 
     uploadFiles() {
@@ -94,6 +121,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
     stopUpload() {
         this.uploadService.stopUpload();
+        this.uploadingFinished = true;
     }
 
     asIsOrder(a: any, b: any) {
