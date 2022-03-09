@@ -28,9 +28,10 @@ export class UploadService {
             reportProgress: true,
             observe: 'events'
         });
-        this.sub = upload.subscribe({
+        let sub: any;
+        sub = upload.subscribe({
             next: (event: any) => {
-                this.filesSubscriptions.add(this.sub);
+                this.filesSubscriptions.add(sub);
                 if (event.type == HttpEventType.UploadProgress) {
                     file.value.percentDone = Math.round(100 * event.loaded / event?.total);
                 } else if (event instanceof HttpResponse) {
@@ -45,8 +46,8 @@ export class UploadService {
                 file.value.ready = true;
                 this.concurrentFilesCount--;
                 this.concurrentUploads(this.concurrentFilesCount);
-                this.sub.unsubscribe();
-                this.filesSubscriptions.delete(this.sub);
+                sub.unsubscribe();
+                this.filesSubscriptions.delete(sub);
             }
         });
     }
