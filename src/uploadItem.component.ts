@@ -23,6 +23,7 @@ import { Subscription } from "rxjs";
 export class UploadItemComponent {
     @Input() file: any;
     @Input() uploading!: boolean;
+    @Input() uploadCanceled!: boolean;
     @Output() fileRemoved: EventEmitter<any> = new EventEmitter<any>();
 
     shown: boolean = true;

@@ -12,14 +12,16 @@
           (change)="selectFiles($event)">
           Drag here
     </div>
-    <div *ngFor="let file of selectedFiles | keyvalue : asIsOrder" class="file">
-      <upload-item [file]="file" [uploading]="uploading" (fileRemoved)="removeFile($event)"></upload-item>
+    <div class="files-list" *ngIf="selectedFiles.size > 0">
+      <div *ngFor="let file of selectedFiles | keyvalue : asIsOrder" class="file">
+        <upload-item [file]="file" [uploading]="uploading" [uploadCanceled]="uploadCanceled" (fileRemoved)="removeFile($event)"></upload-item>
+      </div>
     </div>
-    <div class="selected-files" *ngIf="selectedFiles.size > 0">
+    <div class="button-container" *ngIf="selectedFiles.size > 0">
       <br>
       <button class="upload-btns btn-clear" [disabled]="!uploadingFinished" (click)="clearSelection()">Clear</button>
       <button class="upload-btns btn-upload" *ngIf="!uploading" (click)="uploadFiles()">Upload</button>
-      <button class="upload-btns btn-upload" *ngIf="uploading" (click)="stopUpload()">Stop</button>
+      <button class="upload-btns btn-upload" *ngIf="uploading" (click)="stopUpload()" [hidden]="uploadCanceled">Stop</button>
     </div>
   </form>
 </div>

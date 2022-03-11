@@ -74,6 +74,32 @@
       line-height: 38px;
     }
 
+    .files-list {
+      width: 100%;
+      height: 300px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      scrollbar-color: #ff6358;
+      scrollbar-width: 10px;
+    }
+
+    ::-webkit-scrollbar {
+      background: white;
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ff6358;
+    }
+
+    ::-webkit-scrollbar-button {
+      background: grey;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #fafafa;
+    }
+
     .drop-zone {
       display: inline-block;
       border: 3px dotted grey;
@@ -85,6 +111,10 @@
     .progress-bar {
       width: 100%;
       height: 5px;
+    }
+
+    .button-container {
+      background-color: #fafafa;
     }
   </style>
 </head>

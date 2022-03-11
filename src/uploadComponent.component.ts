@@ -15,6 +15,7 @@ export class UploadComponent implements OnInit, OnDestroy {
     filesIterator = this.selectedFiles.values();
     uploading: boolean = false;
     uploadingFinished: boolean = true;
+    uploadCanceled: boolean = false;
     multiple: boolean = false;
     concurrentFilesSubscription!: Subscription;
 
@@ -110,6 +111,7 @@ export class UploadComponent implements OnInit, OnDestroy {
         this.filesIterator = this.selectedFiles.values();
         this.uploadService.concurrentFilesCount = 0;
         this.uploading = false;
+        this.uploadCanceled = false;
         this.files.reset();
     }
 
@@ -124,6 +126,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
     stopUpload() { 
         this.uploadService.stopUpload();
+        this.uploadCanceled = true;
         this.uploadingFinished = true;
     }
 
