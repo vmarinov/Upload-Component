@@ -122,7 +122,7 @@ export class UploadComponent implements OnInit, OnDestroy {
         }
     }
 
-    stopUpload() {
+    stopUpload() { 
         this.uploadService.stopUpload();
         this.uploadingFinished = true;
     }
