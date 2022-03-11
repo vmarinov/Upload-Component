@@ -40,7 +40,10 @@ export class UploadItemComponent {
 
     getFileSize(size: any) { //simplify
         var units = ['B', 'kB', 'MB', 'GB', 'TB'];
-        var i = Math.floor(Math.log(size) / Math.log(1024));
-        return (size / Math.pow(1024, i)).toFixed(2) + ' ' + units[i];
+        let i = 0;
+        for (; size > 1024; i++) {
+            size = size / 1024;
+        }
+        return size.toFixed(2) + ' ' + units[i];
     }
 }
