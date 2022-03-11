@@ -61,6 +61,8 @@ export class UploadComponent implements OnInit, OnDestroy {
             }
             this.selectedFiles.set(file.name, file);
         }
+
+        event.target.value = '';
         if (alreadySelected != '') {
             alert(alreadySelected);
         }
@@ -85,6 +87,7 @@ export class UploadComponent implements OnInit, OnDestroy {
             this.selectedFiles.set(file.name, file);
         }
 
+        event.target.value = '';
         if (alreadySelected != '') {
             alert(alreadySelected);
         }
