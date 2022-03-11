@@ -1,7 +1,7 @@
 <div class="upload-component" (drop)="dropFiles($event)" (dragover)="dragOver($event)">
   <form novalidate [formGroup]="uploadForm">
     <div class="upload-btn-container">
-      <label class="btn btn-secondary" 
+      <label class="btn btn-secondary select-files-btn" 
         [ngClass]="{ disabled: uploading }"
         [for]="uploading ? '' : 'file-input'">
         Select files...
@@ -10,7 +10,18 @@
           formControlName="files" 
           multiple 
           (change)="selectFiles($event)">
-          Drag here
+          <span *ngIf="!uploading">Drag here</span>
+          <div class="upload-progress" *ngIf="!uploadingDone && !uploadCanceled && !uploadingFinished" @showHideProgress>
+            Files Uploaded {{ uploadedFilesCount + '/' + selectedFiles.size }}
+            <progress [value]="uploadedFilesCount" [max]="selectedFiles.size" style="width: 100%;"></progress> 
+          </div>
+          <div style="color:green;justify-self: flex-end;"
+           *ngIf="uploadingDone && uploadedFilesCount >= 
+              selectedFiles.size && 
+              selectedFiles.size > 0">
+            ✓ Done
+          </div>
+          <div style="color:red;justify-self: flex-end;" *ngIf="uploadCanceled">Canceled</div>
     </div>
     <div class="files-list" *ngIf="selectedFiles.size > 0">
       <div *ngFor="let file of selectedFiles | keyvalue : asIsOrder" class="file">

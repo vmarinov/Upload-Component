@@ -1,12 +1,10 @@
-import { Component, Input, Output, EventEmitter, Inject, OnDestroy } from "@angular/core";
-import { HttpClient, HttpEventType, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 import {
     style,
     animate,
     transition,
     trigger,
 } from "@angular/animations";
-import { UploadService } from "./uploadService.class";
 import { Subscription } from "rxjs";
 
 @Component({

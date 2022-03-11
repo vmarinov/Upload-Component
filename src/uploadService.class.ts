@@ -7,6 +7,7 @@ export class UploadService {
     url: any;
     sub: any;
     concurrentFilesCount: number = 0;
+    uploadedFilesCount: number = 0;
     filesSubscriptions: Set<any> = new Set<any>();
 
     concurrentUploadsSource = new Subject();
@@ -45,6 +46,7 @@ export class UploadService {
                 console.log("Upload done");
                 file.value.ready = true;
                 this.concurrentFilesCount--;
+                this.uploadedFilesCount++;
                 this.concurrentUploads(this.concurrentFilesCount);
                 sub.unsubscribe();
                 this.filesSubscriptions.delete(sub);

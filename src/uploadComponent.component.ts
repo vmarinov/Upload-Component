@@ -2,10 +2,18 @@ import { Component, Inject, Input, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { UploadService } from "./uploadService.class";
 import { Subscription } from "rxjs";
+import { animate, style, transition, trigger } from "@angular/animations";
 
 @Component({
     selector: 'upload',
-    templateUrl: 'upload_component.template.html'
+    templateUrl: 'upload_component.template.html',
+    animations: [
+        trigger('showHideProgress', [
+            transition(':leave', [
+                animate('1000ms', style({ opacity: 0, transform: 'translateY(0px)' }))
+            ])
+        ])
+    ]
 })
 export class UploadComponent implements OnInit, OnDestroy {
     @Input('url') url: any;
@@ -15,8 +23,9 @@ export class UploadComponent implements OnInit, OnDestroy {
     filesIterator = this.selectedFiles.values();
     uploading: boolean = false;
     uploadingFinished: boolean = true;
+    uploadingDone: boolean = false;
     uploadCanceled: boolean = false;
-    multiple: boolean = false;
+    uploadedFilesCount: number = 0;
     concurrentFilesSubscription!: Subscription;
 
     uploadForm!: FormGroup;
@@ -25,11 +34,13 @@ export class UploadComponent implements OnInit, OnDestroy {
     constructor(private uploadService: UploadService) {
         this.concurrentFilesSubscription = this.uploadService.concurrentFilesCount$.subscribe((count: any) => {
             if (count < this.maxUploadFiles) {
+                this.uploadedFilesCount = this.uploadService.uploadedFilesCount;
                 let fileUploaded = this.filesIterator.next();
                 if (!fileUploaded.done) {
                     this.uploadService.uploadFile(fileUploaded);
                 } else {
                     this.uploadingFinished = true;
+                    this.uploadingDone = true;
                 }
             }
         });
@@ -112,6 +123,8 @@ export class UploadComponent implements OnInit, OnDestroy {
         this.uploadService.concurrentFilesCount = 0;
         this.uploading = false;
         this.uploadCanceled = false;
+        this.uploadingDone = false;
+        this.uploadedFilesCount = 0;
         this.files.reset();
     }
 
@@ -124,7 +137,7 @@ export class UploadComponent implements OnInit, OnDestroy {
         }
     }
 
-    stopUpload() { 
+    stopUpload() {
         this.uploadService.stopUpload();
         this.uploadCanceled = true;
         this.uploadingFinished = true;
