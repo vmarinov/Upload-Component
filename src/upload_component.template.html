@@ -6,22 +6,22 @@
         [for]="uploading ? '' : 'file-input'">
         Select files...
       </label>
-        <input type="file" name="files" class="upload-input" id="file-input"
-          formControlName="files" 
-          multiple 
-          (change)="selectFiles($event)">
-          <span *ngIf="!uploading">Drag here</span>
-          <div class="upload-progress" *ngIf="!uploadingDone && !uploadCanceled && !uploadingFinished" @showHideProgress>
-            Files Uploaded {{ uploadedFilesCount + '/' + selectedFiles.size }}
-            <progress [value]="uploadedFilesCount" [max]="selectedFiles.size" style="width: 100%;"></progress> 
-          </div>
-          <div style="color:green;justify-self: flex-end;"
-           *ngIf="uploadingDone && uploadedFilesCount >= 
-              selectedFiles.size && 
-              selectedFiles.size > 0">
-            ✓ Done
-          </div>
-          <div style="color:red;justify-self: flex-end;" *ngIf="uploadCanceled">Canceled</div>
+      <input type="file" name="files" class="upload-input" id="file-input"
+        formControlName="files" 
+        multiple 
+        (change)="selectFiles($event)">
+      <span *ngIf="!uploading">Drag here</span>
+      <div style="color:green;justify-self: flex-end;"
+        *ngIf="uploadingDone && 
+          uploadedFilesCount >=  selectedFiles.size && 
+          selectedFiles.size > 0">
+        ✓ Done
+      </div>
+      <div style="color:red;justify-self: flex-end;" *ngIf="uploadCanceled">Canceled</div>
+      <div class="upload-progress" *ngIf="!uploadingDone && !uploadCanceled && !uploadingFinished" @showHideProgress>
+        Files Uploaded {{ uploadedFilesCount + '/' + selectedFiles.size }}
+        <progress [value]="uploadedFilesCount" [max]="selectedFiles.size" style="width: 100%;"></progress> 
+      </div>
     </div>
     <div class="files-list" *ngIf="selectedFiles.size > 0">
       <div *ngFor="let file of selectedFiles | keyvalue : asIsOrder" class="file">
@@ -33,6 +33,9 @@
       <button class="upload-btns btn-clear" [disabled]="!uploadingFinished" (click)="clearSelection()">Clear</button>
       <button class="upload-btns btn-upload" *ngIf="!uploading" (click)="uploadFiles()">Upload</button>
       <button class="upload-btns btn-upload" *ngIf="uploading" (click)="stopUpload()" [hidden]="uploadCanceled || uploadingFinished">Stop</button>
+      <span *ngIf="!uploading && this.selectedFiles.size > 0 || uploadCanceled"> 
+        ({{ uploadedFilesCount }} / {{ selectedFiles.size }}) File(s) Uploaded
+      </span>
     </div>
   </form>
 </div>

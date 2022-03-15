@@ -10,7 +10,7 @@ import { animate, style, transition, trigger } from "@angular/animations";
     animations: [
         trigger('showHideProgress', [
             transition(':leave', [
-                animate('1000ms', style({ opacity: 0, transform: 'translateY(0px)' }))
+                animate('200ms', style({ opacity: 0, transform: 'translateY(0px)' }))
             ])
         ])
     ]
@@ -34,17 +34,11 @@ export class UploadComponent implements OnInit, OnDestroy {
 
     constructor(private uploadService: UploadService) {
         this.concurrentFilesSubscription = this.uploadService.concurrentFilesCount$.subscribe((count: any) => {
-            if (count < this.maxUploadFiles) {
-                let fileUploaded = this.filesIterator.next();
-                if (!fileUploaded.done) {
-                    this.uploadService.uploadFile(fileUploaded);
-                } else {
-                    this.uploadingFinished = true;
-                    this.uploadingDone = true;
-                }
-            }
+            this.prepareFileAndStartUpload(count);
         });
-        this.readyFilesSubscription = this.uploadService.readyUploads$.subscribe((count: any) => this.uploadedFilesCount = count);
+        this.readyFilesSubscription = this.uploadService.readyUploads$.subscribe((count: any) => {
+            this.updateUploadStatus(count);
+        });
     }
 
     ngOnInit(): void {
@@ -137,6 +131,23 @@ export class UploadComponent implements OnInit, OnDestroy {
         let file = this.filesIterator.next();
         if (!file?.done) {
             this.uploadService.uploadFile(file);
+        }
+    }
+
+    prepareFileAndStartUpload(concurrentCount: number) {
+        if (concurrentCount < this.maxUploadFiles) {
+            let fileUploaded = this.filesIterator.next();
+            if (!fileUploaded.done) {
+                this.uploadService.uploadFile(fileUploaded);
+            }
+        }
+    }
+
+    updateUploadStatus(rdyUploads: number) {
+        this.uploadedFilesCount = rdyUploads;
+        if (this.uploadedFilesCount == this.selectedFiles.size) {
+            this.uploadingFinished = true;
+            this.uploadingDone = true;
         }
     }
 
