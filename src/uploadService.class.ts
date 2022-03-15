@@ -11,12 +11,18 @@ export class UploadService {
     filesSubscriptions: Set<any> = new Set<any>();
 
     concurrentUploadsSource = new Subject();
+    readyUploadsSource = new Subject();
     concurrentFilesCount$ = this.concurrentUploadsSource.asObservable();
+    readyUploads$ = this.readyUploadsSource.asObservable();
 
     constructor(private http: HttpClient) { }
 
     concurrentUploads(count: number) {
         this.concurrentUploadsSource.next(count);
+    }
+
+    uploadsReady(count: number) {
+        this.readyUploadsSource.next(count);
     }
 
     uploadFile(file: any) {
@@ -46,8 +52,9 @@ export class UploadService {
                 console.log("Upload done");
                 file.value.ready = true;
                 this.concurrentFilesCount--;
-                this.uploadedFilesCount++;
                 this.concurrentUploads(this.concurrentFilesCount);
+                this.uploadedFilesCount++;
+                this.uploadsReady(this.uploadedFilesCount);
                 sub.unsubscribe();
                 this.filesSubscriptions.delete(sub);
             }

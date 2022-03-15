@@ -32,7 +32,7 @@
       <br>
       <button class="upload-btns btn-clear" [disabled]="!uploadingFinished" (click)="clearSelection()">Clear</button>
       <button class="upload-btns btn-upload" *ngIf="!uploading" (click)="uploadFiles()">Upload</button>
-      <button class="upload-btns btn-upload" *ngIf="uploading" (click)="stopUpload()" [hidden]="uploadCanceled">Stop</button>
+      <button class="upload-btns btn-upload" *ngIf="uploading" (click)="stopUpload()" [hidden]="uploadCanceled || uploadingFinished">Stop</button>
     </div>
   </form>
 </div>

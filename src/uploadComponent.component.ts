@@ -27,6 +27,7 @@ export class UploadComponent implements OnInit, OnDestroy {
     uploadCanceled: boolean = false;
     uploadedFilesCount: number = 0;
     concurrentFilesSubscription!: Subscription;
+    readyFilesSubscription!: Subscription;
 
     uploadForm!: FormGroup;
     files = new FormControl('');
@@ -34,7 +35,6 @@ export class UploadComponent implements OnInit, OnDestroy {
     constructor(private uploadService: UploadService) {
         this.concurrentFilesSubscription = this.uploadService.concurrentFilesCount$.subscribe((count: any) => {
             if (count < this.maxUploadFiles) {
-                this.uploadedFilesCount = this.uploadService.uploadedFilesCount;
                 let fileUploaded = this.filesIterator.next();
                 if (!fileUploaded.done) {
                     this.uploadService.uploadFile(fileUploaded);
@@ -44,6 +44,7 @@ export class UploadComponent implements OnInit, OnDestroy {
                 }
             }
         });
+        this.readyFilesSubscription = this.uploadService.readyUploads$.subscribe((count: any) => this.uploadedFilesCount = count);
     }
 
     ngOnInit(): void {
@@ -57,6 +58,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.concurrentFilesSubscription.unsubscribe();
+        this.readyFilesSubscription.unsubscribe();
     }
 
     selectFiles(event: any) {
@@ -125,6 +127,7 @@ export class UploadComponent implements OnInit, OnDestroy {
         this.uploadCanceled = false;
         this.uploadingDone = false;
         this.uploadedFilesCount = 0;
+        this.uploadService.uploadedFilesCount = 0;
         this.files.reset();
     }
 
